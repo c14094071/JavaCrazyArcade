@@ -1,0 +1,93 @@
+In Hero Package
+1.Blood
+-Main_App->Blood.init()
+-ReadKeyboard->Blood.change()
+
+2.BombAnimation
+-Judgement (new) Thread
+
+3.BuildPlayer
+-Main_App (new)
+-RandomMapBlock->BuildPlayer.buildTempBlock(j, i)*2
+-RandomMapBlock->BuildPlayer.buildBlock(j, i)
+
+4.CheckBomb
+-Main_App (new) Thread
+
+5.Items
+-Check_items->Items.remove()*6
+-LinkedList->Items.create()*3
+
+6.Judgement //
+-CheckBomb (new)
+
+7.KeyListen
+-Main_App		jFrame_main.addKeyListener(new KeyListen());
+
+8.LinkedList
+-BombAnimation                     LinkedList.getTheNode(link.x,link.y-i*radius);
+-BombAnimation                     LinkedList.setLink("clean",temp.x,temp.y,temp.label,temp.player);
+-RandomMapBlock   LinkedList.setLink
+
+9.Matrix
+-LinkedList Matrix.verifyBombStack
+-Main_App (new)Matrix
+-Main_APp Matrix.clearDataAndRestart
+-RandomMapBlock Matrix matrix =new Matrix()
+-ReadKeyboard Matrix.verifyMove()
+-(Npc1)Npc1 Matrix.verifyMove()
+-(Npc2)Npc2 Matrix.verifyMove()
+
+10.PlayerStartPosition
+-Main_app (new) PlayerStartPosition*2
+-Matrix (new) PlayerStartPosition*2
+
+11.RandomMapBlock
+-Main_App (new) RandomMapBlock()
+-Main_App RandomMapBlock.showBlock()
+-Matrix (new)RandomMapBlock()
+
+12.ReadKeyboard
+-Main_App (new)Thread
+
+13.Sound_Tookies
+-CheckBomb (new) Sound_Tookies
+-KeyListen (new) Sound_Tookies*7
+-Main_App (new) Sound_Tookies
+
+14.Image_Tookies
+-KeyListen (new)*5
+-(Npc1)Npc1 new Image_Tookies
+-(Npc2)Npc2 new Image_Tookies
+
+15.FrameSetting
+-Main_App (new)
+
+16.Check_items
+-Main_App(new)Thread
+
+All of the class extends parameter besides
+//Sound_Tookies
+//CheckBomb
+//Neuron(in package Npc1 and Npc2)
+//Package Extension
+
+In Extension
+1.Node
+-Parameter
+-Matrix
+-LinkedList
+-Judgement
+-BombAnimation
+
+2.Item_Node
+-Items
+-Check_Items
+
+In NPC Package
+1.Npc1
+-Main_App(new )Thread
+-Blood Npc1.label.setVisible(false);
+2.Npc2
+-Main_App(new )Thread
+-Blood Npc2.label.setVisible(false);

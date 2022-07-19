@@ -1,0 +1,293 @@
+package Heros_Myth_v1_0_0_01;
+
+
+import javax.imageio.ImageIO;
+import javax.swing.*;	// Java Swing
+
+import javax.swing.Timer;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;	// Deal with IO error
+import java.util.concurrent.TimeUnit;
+
+
+public class Main_App extends Thread{
+	public static int player_1_x = 200;
+	public static int player_1_y = 200;
+	public static int player_2_x = 400;
+	public static int player_2_y = 400;
+	
+	public static void main(String[] args) throws IOException {
+		// Image Structure:
+		//
+		// JFrame
+		// |_JLayeredPane
+		// |    |_ImageIcon
+		// |        |_ButteredImage
+		
+		
+		// JFrame
+		JFrame jFrame_main = new JFrame();
+	    jFrame_main.setSize(1080, 720);//設定視窗大小
+	    jFrame_main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    
+	    // JLayeredPane
+	    JLayeredPane jLayeredPane_main = new JLayeredPane();
+		
+	    // load Image: map
+	    BufferedImage img_map = ImageIO.read(new File("./resources/maps/1.png"));
+		ImageIcon icon_map = new ImageIcon(img_map);
+		JLabel jLabel_map = new JLabel(icon_map);
+		// Set Image Locations
+		Dimension size_map = jLabel_map.getPreferredSize();
+		jLabel_map.setBounds(100, 100, size_map.width, size_map.height);		
+		
+		
+		// load Image: player_1
+	    BufferedImage img_player_1 = ImageIO.read(new File("./resources/players/player_1_walking.png"));
+	    // Crop player RGB animations
+	    BufferedImage[][] img_player_1_walk = new BufferedImage[4][3];
+	    for( int i = 0; i < 4; i++ ) {
+	    	for( int j = 0; j < 3; j++ ) {
+	    		img_player_1_walk[i][j] = img_player_1.getSubimage( 32*j, 32*i, 32, 32 );
+	    	}
+	    }
+	    ImageIcon icon_player_1 = new ImageIcon(img_player_1_walk[0][0]);
+		JLabel jLabel_player_1 = new JLabel(icon_player_1);
+		// Set Image Locations
+		Dimension size_player_1 = jLabel_player_1.getPreferredSize();
+		jLabel_player_1.setBounds(player_1_x, player_1_y, size_player_1.width, size_player_1.height);
+		
+		
+		// load Image: player_2
+	    BufferedImage img_player_2 = ImageIO.read(new File("./resources/players/player_2_walking.png"));
+	    // Crop player RGB animations
+	    BufferedImage[][] img_player_2_walk = new BufferedImage[4][3];
+	    for( int i = 0; i < 4; i++ ) {
+	    	for( int j = 0; j < 3; j++ ) {
+	    		img_player_2_walk[i][j] = img_player_2.getSubimage( 32*j, 32*i, 32, 32 );
+	    	}
+	    }
+	    ImageIcon icon_player_2 = new ImageIcon(img_player_2_walk[0][0]);
+		JLabel jLabel_player_2 = new JLabel(icon_player_2);
+		// Set Image Locations
+		Dimension size_player_2 = jLabel_player_2.getPreferredSize();
+		jLabel_player_2.setBounds(player_2_x, player_2_y, size_player_2.width, size_player_2.height);
+		
+		
+		// Stack JLabel onto JPanels
+		jLayeredPane_main.add(jLabel_map, JLayeredPane.DEFAULT_LAYER);
+		jLayeredPane_main.add(jLabel_player_1, JLayeredPane.POPUP_LAYER);
+		jLayeredPane_main.add(jLabel_player_2, JLayeredPane.POPUP_LAYER);
+		
+		// put JPanels onto JFrame
+		jFrame_main.add(jLayeredPane_main, BorderLayout.CENTER);
+		
+		// Show JFrame
+		jFrame_main.setVisible(true);
+		
+		// Add listener to listen keyboard
+		jFrame_main.addKeyListener(new KeyListen());
+		
+		/*
+		class SimpleListener implements ActionListener{
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		}
+		*/
+
+		
+		// Player 1 command & animations
+		int player_1_step = 4;
+		int player_2_step = 4;
+		while( true ) {
+			int p1 = KeyListen.player_cmd_1;
+			int p2 = KeyListen.player_cmd_2;
+	
+			System.out.print(p1);
+			System.out.println(p2);
+			
+			if( p1 >= 0 || p2 >= 0) {
+				for( int i = 0; i < 3; i++ ) {
+					// p1
+					if( p1 >= 0 ) {
+						jLabel_player_1.setIcon(new ImageIcon(img_player_1_walk[p1][i]));
+					}
+					// 0: down
+					if( p1 == 0) {
+						jLabel_player_1.setBounds( 
+								player_1_x, 
+								player_1_y += player_1_step, 
+								size_player_1.width, 
+								size_player_1.height);
+					}
+					// 1: left
+					else if( p1 == 1) {
+						jLabel_player_1.setBounds( 
+								player_1_x -= player_1_step, 
+								player_1_y, 
+								size_player_1.width, 
+								size_player_1.height);
+					}
+					// 2: right
+					else if( p1 == 2) {
+						jLabel_player_1.setBounds( 
+								player_1_x += player_1_step, 
+								player_1_y, 
+								size_player_1.width, 
+								size_player_1.height);
+					}
+					// 3: up
+					else if( p1 == 3) {
+						jLabel_player_1.setBounds(  
+								player_1_x, 
+								player_1_y -= player_1_step,
+								size_player_1.width, 
+								size_player_1.height);
+					}				
+					
+					// p2
+					if( p2 >= 0 ) {
+						jLabel_player_2.setIcon(new ImageIcon(img_player_2_walk[p2][i]));
+					}
+					// 0: down
+					if( p2 == 0) {
+						jLabel_player_2.setBounds( 
+								player_2_x, 
+								player_2_y += player_2_step, 
+								size_player_2.width, 
+								size_player_2.height);
+					}
+					// 1: left
+					else if( p2 == 1) {
+						jLabel_player_2.setBounds( 
+								player_2_x -= player_2_step, 
+								player_2_y, 
+								size_player_2.width, 
+								size_player_2.height);
+					}
+					// 2: right
+					else if( p2 == 2) {
+						jLabel_player_2.setBounds( 
+								player_2_x += player_2_step, 
+								player_2_y, 
+								size_player_2.width, 
+								size_player_2.height);
+					}
+					// 3: up
+					else if( p2 == 3) {
+						jLabel_player_2.setBounds(  
+								player_2_x, 
+								player_2_y -= player_2_step,
+								size_player_2.width, 
+								size_player_2.height);
+					}
+					
+					// sleep for a while
+					try {
+						TimeUnit.MILLISECONDS.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// long startTime = System.currentTimeMillis();
+				}		
+				
+			}
+		}
+	}
+}
+
+
+class KeyListen implements KeyListener {
+	public static int player_cmd_1 = -1;
+	public static int player_cmd_2 = -1;
+	
+	// control part
+	
+	// 1. Key Pressed
+    @Override
+    public void keyPressed(KeyEvent e) {
+    	// control player part:
+    	// timer delay
+
+		// move player:
+		// up
+    	
+		if(e.getKeyCode() == KeyEvent.VK_UP) {
+			player_cmd_1 = 3;
+		}
+		// down
+		else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			player_cmd_1 = 0;
+		}
+		// left
+		else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			player_cmd_1 = 1;
+		}
+		// right
+		else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			player_cmd_1 = 2;
+		}
+		
+		if(e.getKeyChar() == 'w') {
+			player_cmd_2 = 3;
+		}
+		else if(e.getKeyChar() == 's') {
+			player_cmd_2 = 0;
+		}
+		else if(e.getKeyChar() == 'a') {
+			player_cmd_2 = 1;
+		}
+		else if(e.getKeyChar() == 'd') {
+			player_cmd_2 = 2;
+		}
+    }
+    
+    // 2. Key Released
+	@Override 
+    public void keyReleased(KeyEvent e) {
+		// player_cmd = -1 : Do nothing
+		//player_cmd_1 = -1;
+		
+		if( e.getKeyCode() == KeyEvent.VK_UP && KeyListen.player_cmd_1 == 3)
+			player_cmd_1 = -1;
+		else if( e.getKeyCode() == KeyEvent.VK_DOWN && KeyListen.player_cmd_1 == 0)
+			player_cmd_1 = -1;
+		else if( e.getKeyCode() == KeyEvent.VK_LEFT && KeyListen.player_cmd_1 == 1)
+			player_cmd_1 = -1;
+		else if( e.getKeyCode() == KeyEvent.VK_RIGHT && KeyListen.player_cmd_1 == 2)
+			player_cmd_1 = -1;
+		
+		
+		if( e.getKeyChar() == 'w' && KeyListen.player_cmd_2 == 3)
+			player_cmd_2 = -1;
+		else if( e.getKeyChar() == 's' && KeyListen.player_cmd_2 == 0)
+			player_cmd_2 = -1;
+		else if( e.getKeyChar() == 'a' && KeyListen.player_cmd_2 == 1)
+			player_cmd_2 = -1;
+		else if( e.getKeyChar() == 'd' && KeyListen.player_cmd_2 == 2)
+			player_cmd_2 = -1;
+
+		
+	}
+	
+	// 3. Key Typed
+    @Override // 输入的内容
+    public void keyTyped(KeyEvent e) {
+    }
+}
+
+
+
+   
+
